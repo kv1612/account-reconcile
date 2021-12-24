@@ -5,7 +5,7 @@
 import logging
 from itertools import product
 
-from odoo import models, api
+from odoo import models, api, registry
 from odoo.tools.translate import _
 
 _logger = logging.getLogger(__name__)
@@ -264,7 +264,8 @@ class MassReconcileAdvanced(models.AbstractModel):
 
                 if (ctx['commit_every'] and
                         group_count % ctx['commit_every'] == 0):
-                    self.env.cr.commit()
+                    cr = registry(self._cr.dbname).cursor()
+                    cr.commit()
                     _logger.info("Commit the reconciliations after %d groups",
                                  group_count)
             _logger.info("Reconciliation is over")
